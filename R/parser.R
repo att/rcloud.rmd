@@ -20,10 +20,12 @@ parse_rmd <- function(lines) {
   ("knitr" %:::% "knit_code")$restore()
   parsed <- ("knitr" %:::% "split_file")(lines, patterns = all_patterns$md)
 
-  c(
+  res <- c(
     list(structure(class = "yaml", yaml)),
     lapply(parsed, make_chunk_parser())
   )
+
+  drop_nulls(res)
 }
 
 make_chunk_parser <- function() {
@@ -32,24 +34,33 @@ make_chunk_parser <- function() {
   function(chunk) {
 
     if (inherits(chunk, "inline")) {
-      structure(
-        class = "inline",
-        list(
-          text = chunk$input,
-          code = chunk$code,
-          code_loc = chunk$location
+      if (chunk$input == "") {
+        NULL
+      } else {
+        structure(
+          class = "inline",
+          list(
+            text = chunk$input,
+            code = chunk$code,
+            code_loc = chunk$location
+          )
         )
-      )
+      }
 
     } else if (inherits(chunk, "block")) {
       current_block <<- current_block + 1
-      structure(
-        class = "block",
-        list(
-          code = ("knitr" %:::% "knit_code")$get(current_block),
-          param = chunk$params
+      code <- ("knitr" %:::% "knit_code")$get(current_block)
+      if (code == "") {
+        NULL
+      } else {
+        structure(
+          class = "block",
+          list(
+            code = code,
+            param = chunk$params
+          )
         )
-      )
+      }
     }
 
   }
