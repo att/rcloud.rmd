@@ -1,0 +1,13 @@
+Package: rcloud.rmd
+Type: Package
+Title: Import and Export RStudio Notebooks into/from RCloud
+Version: 1.0.0
+Authors@R: person("Gábor", "Csárdi", email = "gcsardi@mango-solutions.com",
+                  role = c("aut", "cre"))
+Description: Import and export Rmarkdown RStudio notebooks, or other
+    Rmarkdown documents, into/from RCLoud notebooks.
+License: MIT + file LICENSE
+RCloud-Extension: gui
+Encoding: UTF-8
+Imports:
+    rcloud.support
