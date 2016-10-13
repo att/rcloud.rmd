@@ -1,0 +1,4 @@
+
+importFrom(knitr, all_patterns)
+importFrom(knitr, opts_knit)
+importFrom(rcloud.support, rcloud.install.js.module)

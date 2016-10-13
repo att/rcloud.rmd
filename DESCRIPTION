@@ -10,4 +10,5 @@ License: MIT + file LICENSE
 RCloud-Extension: gui
 Encoding: UTF-8
 Imports:
+    knitr,
     rcloud.support
