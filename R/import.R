@@ -21,8 +21,21 @@ importRmd <- function(raw, filename) {
         )
 
       } else if (inherits(chunk, "block")) {
+        content <- if (length(chunk$param)) {
+          paste0(
+            "##> ",
+            paste(
+              names(chunk$param),
+              chunk$param,
+              sep = "=",
+              collapse = ", "
+            ),
+            "\n"
+          )
+        }
+        content <- paste0(content, paste(chunk$code, collapse = "\n"))
         structure(
-          list(list(content = paste(chunk$code, collapse = "\n"))),
+          list(list(content = content)),
           names = paste0("part", num, ".R")
         )
       }
