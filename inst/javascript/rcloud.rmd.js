@@ -53,20 +53,18 @@
                                 function do_import() {
                                     // Need to call back to R to import the notebook
                                     oc.importRmd(notebook_raw, notebook_filename).then(
-                                        function(x) {
-                                            notebook = Notebook.sanitize(x);
+                                        function(notebook) {
+                                            console.log(notebook);
                                             if (notebook) {
-                                                rcloud.create_notebook(notebook, false).then(function(notebook) {
-                                                    editor.star_notebook(true, {notebook: notebook}).then(function() {
-                                                        editor.set_notebook_visibility(notebook.id, true);
+                                                editor.star_notebook(true, {notebook: notebook}).then(function() {
+                                                    editor.set_notebook_visibility(notebook.id, true);
 
-                                                        // highlight the node:
-                                                        editor.highlight_imported_notebooks(notebook);
-                                                    });
+                                                    // highlight the node:
+                                                    editor.highlight_imported_notebooks(notebook);
                                                 });
-
-                                                dialog.modal('hide');
                                             }
+
+                                            dialog.modal('hide');
                                         }
                                     );
                                 }

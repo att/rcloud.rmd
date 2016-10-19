@@ -43,7 +43,12 @@ importRmd <- function(raw, filename) {
   )
 
   notebook$description <- make_description(yaml, filename)
-  notebook
+
+  res <- rcloud.create.notebook(notebook, FALSE)
+
+  if (!isTRUE(res$ok)) stop("failed to create new notebook")
+
+  res$content
 }
 
 make_description <- function(yaml, filename) {
