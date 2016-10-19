@@ -1,13 +1,14 @@
 
-importRmd <- function(raw) {
+importRmd <- function(raw, filename) {
   lines <- strsplit(raw, "\n", fixed = TRUE)[[1]]
   parsed <- parse_rmd(lines)
 
-  list(
-    description = "foobar",
+  yaml <- NULL
+  notebook <- list(
     files = mapply(seq_along(parsed), parsed, FUN = function(num, chunk) {
 
       if (inherits(chunk, "yaml")) {
+        yaml <<- chunk
         structure(
           list(list(content = paste(chunk, collapse = "\n"))),
           names = paste0("part", num, ".md")
@@ -27,4 +28,23 @@ importRmd <- function(raw) {
       }
     })
   )
+
+  notebook$description <- make_description(yaml, filename)
+  notebook
+}
+
+make_description <- function(yaml, filename) {
+
+  yaml <- paste(
+    grep("^---\\s*$", yaml, invert = TRUE, value = TRUE),
+    collapse = "\n"
+  )
+  yaml <- tryCatch(yaml.load(yaml), error = function(e) NULL)
+
+  from_filename <- file_path_sans_ext(basename(filename))
+  from_yaml <- tryCatch(
+    yaml$Title %||% yaml$title,
+    error = function(e) NULL
+  )
+  from_yaml %||% from_filename
 }

@@ -24,6 +24,7 @@
                                 var notebook_raw = null;
                                 var notebook = null;
                                 var notebook_status = null;
+                                var notebook_filename = null;
                                 var import_button = null;
 
                                 function do_upload(file) {
@@ -38,22 +39,17 @@
                                         );
                                         ui_utils.enable_bs_button(import_button);
                                         notebook_raw = fr.result;
+                                        notebook_filename = file.name;
                                     };
                                     fr.readAsText(file);
-
                                 }
 
                                 function do_import() {
-                                    var desc = "Imported from Rmarkdown";
-
                                     // Need to call back to R to import the notebook
-                                    oc.importRmd(notebook_raw).then(
+                                    oc.importRmd(notebook_raw, notebook_filename).then(
                                         function(x) {
-                                            console.log(x);
                                             notebook = Notebook.sanitize(x);
-                                            if (notebook && desc.length > 0) {
-                                                notebook.description = desc;
-
+                                            if (notebook) {
                                                 rcloud.create_notebook(notebook, false).then(function(notebook) {
                                                     editor.star_notebook(true, {notebook: notebook}).then(function() {
                                                         editor.set_notebook_visibility(notebook.id, true);
