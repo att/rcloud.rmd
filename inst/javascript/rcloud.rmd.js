@@ -24,12 +24,10 @@
                                 var notebook_raw = null;
                                 var notebook = null;
                                 var notebook_status = null;
-                                var notebook_desc_content = null;
                                 var import_button = null;
 
                                 function do_upload(file) {
                                     notebook_status.hide();
-                                    notebook_desc.hide();
                                     var fr = new FileReader();
                                     fr.onloadend = function(e) {
                                         notebook_status.show();
@@ -38,7 +36,6 @@
                                                 .slice(0,15)
                                                 .join("\n") + '\n...\n</pre>'
                                         );
-                                        notebook_desc_content.val('');
                                         ui_utils.enable_bs_button(import_button);
                                         notebook_raw = fr.result;
                                     };
@@ -78,7 +75,7 @@
                                 file_select
                                     .click(function() {
                                         ui_utils.disable_bs_button(import_button);
-                                        [notebook_desc, notebook_status].forEach(function(el) { el.hide(); });
+                                        notebook_status.hide();
                                         file_select.val(null);
                                     })
                                     .change(function() {
@@ -88,30 +85,8 @@
                                 notebook_status = $('<div />');
                                 notebook_status.append(notebook_status);
 
-                                var notebook_desc = $('<span>Notebook description: </span>');
-                                notebook_desc_content = $('<input type="text" class="form-control-ext" size="50" id="import-notebook-description"></input>')
-                                    .on('change paste keyup', function(e) {
-
-                                        var desc_length = $(this).val().length;
-
-                                        if(desc_length) {
-                                            ui_utils.enable_bs_button(import_button);
-                                        } else {
-                                            ui_utils.disable_bs_button(import_button);
-                                        }
-
-                                        if (e.which === $.ui.keyCode.ENTER && desc_length) {
-                                            do_import();
-                                            return false;
-                                        }
-
-                                        return true;
-                                    });
-
-                                notebook_desc.append(notebook_desc_content);
                                 body.append($('<p/>').append(file_select))
-                                    .append($('<p/>').append(notebook_status.hide()))
-                                    .append($('<p/>').append(notebook_desc.hide()));
+                                    .append($('<p/>').append(notebook_status.hide()));
                                 var cancel = $('<span class="btn btn-cancel">Cancel</span>')
                                     .on('click', function() { $(dialog).modal('hide'); });
                                 import_button = $('<span class="btn btn-primary">Import</span>')
@@ -135,8 +110,6 @@
                                         $("#notebook-file-upload")[0].value = null;
                                         notebook_status.text('');
                                         notebook_status.hide();
-                                        notebook_desc_content.val('');
-                                        notebook_desc.hide();
                                     });
 
                                 // keep selected file, in case repeatedly importing is helpful
