@@ -1,6 +1,7 @@
 
 importFrom(knitr, all_patterns)
 importFrom(knitr, opts_knit)
+importFrom(rcloud.support, rcloud.get.notebook)
 importFrom(rcloud.support, rcloud.install.js.module)
 importFrom(tools, file_path_sans_ext)
 importFrom(yaml, yaml.load)

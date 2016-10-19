@@ -14,7 +14,10 @@ caps <- NULL
     paste(readLines(path), collapse = '\n')
   )
 
-  ocaps <- list(importRmd = make_oc(importRmd))
+  ocaps <- list(
+    importRmd = make_oc(importRmd),
+    exportRmd = make_oc(exportRmd)
+  )
 
   if (!is.null(caps)) caps$init(ocaps)
 }

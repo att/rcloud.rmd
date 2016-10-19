@@ -1,6 +1,11 @@
 
 ((function() {
 
+    function download_as_file(filename, content, mimetype) {
+        var file = new Blob([content], {type: mimetype});
+        saveAs(file, filename); // FileSaver.js
+    }
+
     return {
         init: function(ocaps, k) {
 
@@ -8,7 +13,8 @@
             if (RCloud.UI.advanced_menu.add) {
 
                 oc = RCloud.promisify_paths(ocaps, [
-                    [ 'importRmd' ]
+                    [ 'importRmd' ],
+                    [ 'exportRmd' ]
                 ], true);
 
                 RCloud.UI.advanced_menu.add({
@@ -125,7 +131,19 @@
 
                         }       // action
 
-                    }           // rmdImport
+                    },          // rmdImport
+
+                    rmdExport: {
+                        sort: 10002,
+                        text: 'Export Rmarkdown file',
+                        modes: ['edit'],
+                        action: function() {
+                            oc.exportRmd(shell.gistname(), shell.version()).then(function(rmd) {
+                                if (rmd === null) { rmd = ''; }
+                                download_as_file(rmd.description + '.Rmd', rmd.rmd, 'text/plain');
+                            });
+                        }
+                    }
 
                 });
             }
