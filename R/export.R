@@ -4,7 +4,7 @@
 
 exportRmd <- function(id, version, file = NULL) {
 
-  res <- rcloud.get.notebook(id, version)
+  res <- rcloud.support::rcloud.get.notebook(id, version)
 
   if (! res$ok) return(NULL)
 

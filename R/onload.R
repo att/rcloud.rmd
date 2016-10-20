@@ -9,7 +9,7 @@ caps <- NULL
     "rcloud.rmd.js"
   )
 
-  caps <<- rcloud.install.js.module(
+  caps <<- rcloud.support::rcloud.install.js.module(
     "rcloud.rmd",
     paste(readLines(path), collapse = '\n')
   )
