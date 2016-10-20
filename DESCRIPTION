@@ -14,4 +14,7 @@ Imports:
     tools,
     yaml
 Suggests:
-    rcloud.support
+    miniUI,
+    rcloud.support,
+    rstudioapi,
+    shiny

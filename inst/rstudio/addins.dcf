@@ -1,0 +1,4 @@
+Name: Export to RCloud notebook
+Description: Create an RCloud notebook from the current Rmd file.
+Binding: rstudio_to_rcloud_rmd
+Interactive: true

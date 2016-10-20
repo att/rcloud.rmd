@@ -3,6 +3,9 @@ caps <- NULL
 
 .onLoad <- function(libname, pkgname) {
 
+  ## Not in RCloud? Return silently
+  if (! requireNamespace("rcloud.support", quietly = TRUE)) return()
+
   path <- system.file(
     package = "rcloud.rmd",
     "javascript",
