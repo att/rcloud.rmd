@@ -1,6 +1,6 @@
 
-importRmd <- function(raw, filename) {
-  lines <- strsplit(raw, "\n", fixed = TRUE)[[1]]
+rmdToJson <- function(text, filename) {
+  lines <- strsplit(text, "\n", fixed = TRUE)[[1]]
   parsed <- parse_rmd(lines)
 
   yaml <- NULL
@@ -43,6 +43,13 @@ importRmd <- function(raw, filename) {
   )
 
   notebook$description <- make_description(yaml, filename)
+
+  notebook
+}
+
+importRmd <- function(text, filename) {
+
+  notebook <- rmdToJson(text, filename)
 
   res <- rcloud.support::rcloud.create.notebook(notebook, FALSE)
 
