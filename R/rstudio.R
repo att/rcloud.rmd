@@ -24,8 +24,7 @@ rstudio_to_rcloud_rmd <- function() {
       session$sendCustomMessage(
         type = "rcloudexport",
         message = list(
-          text = text,
-          filename = filename
+          notebook = rmdToJson(text, filename)
         )
       )
 

@@ -3,8 +3,9 @@ Shiny.addCustomMessageHandler(
     "rcloudexport",
     function(message) {
         post_to_url(
-            'https://httpbin.org/post',
-            { 'rmd': JSON.stringify(message) }
+            'http://127.0.0.1:8080/api.R/create',
+            { "json": JSON.stringify(message.notebook) },
+            'post'
         );
     }
 );
