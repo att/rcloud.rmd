@@ -21,6 +21,12 @@ rmdToJson <- function(text, filename) {
         )
 
       } else if (inherits(chunk, "block")) {
+
+        if ("label" %in% names(chunk$param) &&
+            grepl("^unnamed-chunk-", chunk$param$label)) {
+          chunk$param <- chunk$param[names(chunk$param) != "label"]
+        }
+
         content <- if (length(chunk$param)) {
           paste0(
             "##> ",
