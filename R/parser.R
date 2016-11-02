@@ -50,7 +50,7 @@ make_chunk_parser <- function() {
     } else if (inherits(chunk, "block")) {
       current_block <<- current_block + 1
       code <- ("knitr" %:::% "knit_code")$get(current_block)
-      if (code == "") {
+      if (identical(code, "") || is.null(code) || length(code) == 0) {
         NULL
       } else {
         structure(
