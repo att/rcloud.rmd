@@ -32,9 +32,15 @@ rstudio_to_rcloud_rmd <- function() {
         edit_ctx$path %||% NA_character_
       ))
 
+      oldurl <- input$oldurl
+      newurl <- input$newurl
+
+      if (nzchar(newurl) && !is.na(newurl)) add_to_rc_urls(newurl)
+
       session$sendCustomMessage(
         type = "rcloudexport",
         message = list(
+          url = if (nzchar(newurl) && !is.na(newurl)) newurl else oldurl,
           notebook = rmdToJson(text, filename)
         )
       )
@@ -63,6 +69,40 @@ add_resource_path <- function() {
   ))
 }
 
+rcloud_social_url <- "https://rcloud.social"
+
 cached_rc_urls <- function() {
-  c("foo", "bar")
+  rcfile <- rc_cache_file()
+  tryCatch(
+    {
+      if (file.exists(rcfile)) {
+        c(readLines(rcfile), rcloud_social_url)
+      } else {
+        rcloud_social_url
+      }
+    },
+    error = function(e) {
+      warning(e)
+      rcloud_social_url
+    }
+  )
+}
+
+add_to_rc_urls <- function(entry) {
+  rcfile <- rc_cache_file()
+  try(
+    dir.create(dirname(rcfile), recursive = TRUE),
+    silent = TRUE
+  )
+  try(
+    cat(entry, "\n", sep = "", file = rcfile, append = TRUE),
+    silent = TRUE
+  )
+}
+
+rc_cache_file <- function() {
+  file.path(
+    user_data_dir("rcloud.rmd", "rcloud.rmd"),
+    "rcloud-url-cache.txt"
+  )
 }

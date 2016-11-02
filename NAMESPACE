@@ -2,5 +2,6 @@
 export(exportRmd)
 importFrom(knitr, all_patterns)
 importFrom(knitr, opts_knit)
+importFrom(rappdirs, user_data_dir)
 importFrom(tools, file_path_sans_ext)
 importFrom(yaml, yaml.load)
