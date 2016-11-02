@@ -5,8 +5,8 @@ rstudio_to_rcloud_rmd <- function() {
     add_resource_path(),
     miniUI::miniContentPanel(
       shiny::textInput("url", "RCloud URL"),
-      actionButton("exportButton", "Export"),
-      actionButton("cancelButton", "Cancel")
+      shiny::actionButton("exportButton", "Export"),
+      shiny::actionButton("cancelButton", "Cancel")
     )
   )
 
