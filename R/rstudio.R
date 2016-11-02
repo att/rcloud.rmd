@@ -1,16 +1,27 @@
 
 rstudio_to_rcloud_rmd <- function() {
 
+  rc_urls <- cached_rc_urls()
+
   ui <- miniUI::miniPage(
     add_resource_path(),
     miniUI::miniContentPanel(
-      shiny::textInput("url", "RCloud URL"),
+      shiny::plotOutput("logo", height = "200px"),
+      shiny::selectInput("oldurl", "Recently used RCloud URLs", rc_urls),
+      shiny::textInput("newurl", "New RCloud URL"),
       shiny::actionButton("exportButton", "Export"),
       shiny::actionButton("cancelButton", "Cancel")
     )
   )
 
   server <- function(input, output, session) {
+
+    output$logo <- renderImage({
+
+      fn <- system.file(package = "rcloud.rmd", "shiny", "RCloud.svg")
+      list(src = fn, alt = "RCloud -- Import Rmarkdown file")
+
+    }, deleteFile = FALSE)
 
     shiny::observeEvent(input$exportButton, {
 
@@ -50,4 +61,8 @@ add_resource_path <- function() {
   shiny::tags$head(shiny::tags$script(
     src = "rcloudexport/messagehandler.js"
   ))
+}
+
+cached_rc_urls <- function() {
+  c("foo", "bar")
 }
