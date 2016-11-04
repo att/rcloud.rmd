@@ -31,6 +31,9 @@ exportRmd <- function(id, version, file = NULL) {
 
     } else if (grepl("^part.*\\.md$", cell$filename)) {
       cat(format_md_cell(cell), file = tmp, append = TRUE)
+
+    } else if (grepl("^part.*\\.Rmd$", cell$filename)) {
+      cat(format_rmd_cell(cell), file = tmp, append = TRUE)
     }
   }
 
@@ -57,5 +60,9 @@ format_r_cell <- function(cell) {
 }
 
 format_md_cell <- function(cell) {
+  paste0(cell$content, "\n")
+}
+
+format_rmd_cell <- function(cell) {
   paste0(cell$content, "\n")
 }
