@@ -34,6 +34,10 @@ exportRmd <- function(id, version, file = NULL) {
 
     } else if (grepl("^part.*\\.Rmd$", cell$filename)) {
       cat(format_rmd_cell(cell), file = tmp, append = TRUE)
+
+    } else {
+      ext <- tools::file_ext(cell$filename)
+      cat(format_default_cell(cell, ext), file = tmp, append = TRUE)
     }
   }
 
@@ -48,15 +52,7 @@ exportRmd <- function(id, version, file = NULL) {
 }
 
 format_r_cell <- function(cell) {
-  ## Handle ##> headers, these are chunk options
-  options <- if (grepl("^##>", cell$content)) {
-    split <- strsplit(cell$content, "\n")[[1]]
-    line <- split[1]
-    cell$content <- paste(split[-1], collapse = "\n")
-    paste0(" ", sub("^##>\\s*", "", line))
-  }
-
-  paste0("```{r", options, "}\n", cell$content, "\n```\n")
+  format_default_cell(cell, ext = "R")
 }
 
 format_md_cell <- function(cell) {
@@ -65,4 +61,26 @@ format_md_cell <- function(cell) {
 
 format_rmd_cell <- function(cell) {
   paste0(cell$content, "\n")
+}
+
+format_default_cell <- function(cell, ext) {
+
+  conv <- c(R = "r", py = "python")
+
+  if (ext %in% names (conv)) {
+    label <- conv[ext]
+  } else {
+    warning("Unknown cell type ", ext, " written as text")
+    return(paste0(cell$content, "\n"))
+  }
+
+  ## Handle ##> headers, these are chunk options
+  options <- if (grepl("^##>", cell$content)) {
+    split <- strsplit(cell$content, "\n")[[1]]
+    line <- split[1]
+    cell$content <- paste(split[-1], collapse = "\n")
+    paste0(" ", sub("^##>\\s*", "", line))
+  }
+
+  paste0("```{", label, options, "}\n", cell$content, "\n```\n")
 }
