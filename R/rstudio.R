@@ -102,7 +102,7 @@ add_to_rc_urls <- function(entry) {
 
 rc_cache_file <- function() {
   file.path(
-    user_data_dir("rcloud.rmd", "rcloud.rmd"),
+    rappdirs::user_data_dir("rcloud.rmd", "rcloud.rmd"),
     "rcloud-url-cache.txt"
   )
 }

@@ -11,11 +11,11 @@ RCloud-Extension: gui
 Encoding: UTF-8
 Imports:
     knitr,
-    rappdirs,
     tools,
     yaml
 Suggests:
     miniUI,
+    rappdirs,
     rcloud.support,
     rstudioapi,
     shiny
