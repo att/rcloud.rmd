@@ -1,6 +1,9 @@
 
 rstudio_to_rcloud_rmd <- function() {
 
+  if (! check_opened_file()) return(invisible())
+  if (! check_required_packages()) return(invisible())
+
   edit_ctx <- rstudioapi::getSourceEditorContext()
   text <- paste(edit_ctx$contents, collapse = "\n")
   filename <- file_path_sans_ext(basename(
@@ -48,4 +51,29 @@ template <- function(file, data) {
   lines <- readLines(file)
   filled <- whisker::whisker.render(lines, data = data)
   writeLines(filled, file)
+}
+
+check_opened_file <- function() {
+  tryCatch(
+    { rstudioapi::getSourceEditorContext(); TRUE },
+    error = function(e) {
+      message("No Rmd file is open for RCloud export.")
+      FALSE
+    }
+  )
+}
+
+check_required_packages <- function() {
+  check_installed_package("jsonlite") &&
+    check_installed_package("rstudioapi") &&
+    check_installed_package("whisker")
+}
+
+check_installed_package <- function(pkg) {
+  if (! requireNamespace(pkg, quietly = TRUE)) {
+    message("Package needed for Rmd export, but not installed: ", pkg)
+    FALSE
+  } else {
+    TRUE
+  }
 }
