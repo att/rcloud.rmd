@@ -1,14 +1,21 @@
+// non-empty line to mitigate a whisker bug
+var notebook = {{{ notebook }}};
 
-Shiny.addCustomMessageHandler(
-    "rcloudexport",
-    function(message) {
-        post_to_url(
-            message.url + '/api.R/create',
-            { "json": JSON.stringify(message.notebook) },
-            'post'
-        );
-    }
-);
+function exportrmd() {
+    var oldurl = $('#oldurl').val();
+    var newurl = $('#newurl').val();
+    var url = newurl || oldurl;
+    post_to_url(
+	url + '/api.R/create',
+	{ "json": JSON.stringify(notebook) },
+	"post"
+    );
+}
+
+function cancelrmd() {
+    // TODO
+    alert("Cancelled. You can close the browser tab/window");
+}
 
 // http://stackoverflow.com/questions/133925/
 // javascript-post-request-like-a-form-submit/3259946#3259946

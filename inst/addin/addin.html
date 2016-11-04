@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class=""><head><meta http-equiv="Content-Type"
+			   content="text/html; charset=UTF-8">
+<script src="./addin_files/jquery.min.js"></script>
+<script src="./addin_files/babel-polyfill.min.js"></script>
+<link href="./addin_files/selectize.bootstrap3.css" rel="stylesheet">
+<!--[if lt IE 9]>
+<script src="shared/selectize/js/es5-shim.min.js"></script>
+<![endif]-->
+<script src="./addin_files/selectize.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="./addin_files/bootstrap.min.css" rel="stylesheet">
+<script src="./addin_files/bootstrap.min.js"></script>
+<script src="./addin_files/html5shiv.min.js"></script>
+<script src="./addin_files/respond.min.js"></script>
+<style type="text/css">
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body { padding: 0px; margin: 0; }
+</style>
+<script src="./addin_files/submit.js"></script>
+</head>
+
+<body style="padding:20px">
+
+  <div id="logo" style="margin-bottom:30px">
+    <img src="./addin_files/logo.svg"
+	 alt="RCloud -- Import Rmarkdown file">
+  </div>
+
+  <div class="form-group">
+    <div class = "control-group">
+      <label class="control-label" for="oldurl">
+	Known RCloud URLs
+      </label>
+      <select id="oldurl" style="width: 380px">
+        {{{ urls }}}
+	</select>
+      <script>
+	$('#oldurl').selectize({ create: true });
+      </script>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="newurl">Alternative RCloud URL</label>
+    <input id="newurl" type="text" class="form-control" value=""
+	   style="width: 380px">
+  </div>
+
+  <button id="exportButton" type="button"
+	  class="btn btn-default" onclick = "exportrmd()">Export</button>
+  <button id="cancelButton" type="button"
+	  class="btn btn-default" onclick = "cancelrmd()">Cancel</button>
+
+</body></html>

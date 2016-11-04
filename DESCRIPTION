@@ -14,8 +14,7 @@ Imports:
     tools,
     yaml
 Suggests:
-    miniUI,
-    rappdirs,
+    jsonlite,
     rcloud.support,
     rstudioapi,
-    shiny
+    whisker

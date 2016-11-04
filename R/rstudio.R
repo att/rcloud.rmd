@@ -1,108 +1,51 @@
 
 rstudio_to_rcloud_rmd <- function() {
 
-  rc_urls <- cached_rc_urls()
-
-  ui <- miniUI::miniPage(
-    add_resource_path(),
-    miniUI::miniContentPanel(
-      shiny::plotOutput("logo", height = "200px"),
-      shiny::selectInput("oldurl", "Recently used RCloud URLs", rc_urls),
-      shiny::textInput("newurl", "New RCloud URL"),
-      shiny::actionButton("exportButton", "Export"),
-      shiny::actionButton("cancelButton", "Cancel")
-    )
-  )
-
-  server <- function(input, output, session) {
-
-    output$logo <- renderImage({
-
-      fn <- system.file(package = "rcloud.rmd", "shiny", "RCloud.svg")
-      list(src = fn, alt = "RCloud -- Import Rmarkdown file")
-
-    }, deleteFile = FALSE)
-
-    shiny::observeEvent(input$exportButton, {
-
-      ## Get the text of the currently edited document
-      edit_ctx <- rstudioapi::getSourceEditorContext()
-      text <- paste(edit_ctx$contents, collapse = "\n")
-      filename <- file_path_sans_ext(basename(
-        edit_ctx$path %||% NA_character_
-      ))
-
-      oldurl <- input$oldurl
-      newurl <- input$newurl
-
-      if (nzchar(newurl) && !is.na(newurl)) add_to_rc_urls(newurl)
-
-      session$sendCustomMessage(
-        type = "rcloudexport",
-        message = list(
-          url = if (nzchar(newurl) && !is.na(newurl)) newurl else oldurl,
-          notebook = rmdToJson(text, filename)
-        )
-      )
-
-      shiny::stopApp()
-    })
-
-    shiny::observeEvent(input$cancelButton, {
-      shiny::stopApp()
-    })
-  }
-
-  ##  viewer <- shiny::dialogViewer("Export to RCloud", 400, 300)
-  viewer <- shiny::browserViewer()
-  shiny::runGadget(ui, server, viewer = viewer)
-}
-
-add_resource_path <- function() {
-  shiny::addResourcePath(
-    "rcloudexport",
-    system.file("shiny", package = "rcloud.rmd")
-  )
-
-  shiny::tags$head(shiny::tags$script(
-    src = "rcloudexport/messagehandler.js"
+  edit_ctx <- rstudioapi::getSourceEditorContext()
+  text <- paste(edit_ctx$contents, collapse = "\n")
+  filename <- file_path_sans_ext(basename(
+    edit_ctx$path %||% NA_character_
   ))
+
+  ## Copy over files to temp dir
+  tmp <- tempfile()
+  dir.create(tmp)
+  file.copy(
+    system.file("addin", package = "rcloud.rmd"),
+    tmp,
+    recursive = TRUE
+  )
+
+  ## Fill the templates
+  data <- list(
+    notebook = as.character(toJSON(rmdToJson(text, filename))),
+    urls = rcloud_urls()
+  )
+  template(file.path(tmp, "addin", "addin_files", "submit.js"), data)
+  template(file.path(tmp, "addin", "addin.html"), data)
+
+  html <- paste0("file://", tmp, "/addin/addin.html")
+  browseURL(html)
 }
 
-rcloud_social_url <- "https://rcloud.social"
+toJSON <- function(x) {
+  x <- I(x)
 
-cached_rc_urls <- function() {
-  rcfile <- rc_cache_file()
-  tryCatch(
-    {
-      if (file.exists(rcfile)) {
-        c(readLines(rcfile), rcloud_social_url)
-      } else {
-        rcloud_social_url
-      }
-    },
-    error = function(e) {
-      warning(e)
-      rcloud_social_url
-    }
+  jsonlite::toJSON(
+    x, dataframe = "columns", null = "null", na = "null",
+    auto_unbox = TRUE, digits = 16, use_signif = TRUE,
+    force = TRUE, POSIXt = "ISO8601", UTC = TRUE, rownames = FALSE,
+    keep_vec_names = TRUE, json_verbatim = TRUE
   )
 }
 
-add_to_rc_urls <- function(entry) {
-  rcfile <- rc_cache_file()
-  try(
-    dir.create(dirname(rcfile), recursive = TRUE),
-    silent = TRUE
-  )
-  try(
-    cat(entry, "\n", sep = "", file = rcfile, append = TRUE),
-    silent = TRUE
-  )
+rcloud_urls <- function() {
+  urls <- c("https://rcloud.social", "http://127.0.0.1:8080")
+  paste0("<option value=\"", urls, "\">", urls, "</option>", collapse = "\n")
 }
 
-rc_cache_file <- function() {
-  file.path(
-    rappdirs::user_data_dir("rcloud.rmd", "rcloud.rmd"),
-    "rcloud-url-cache.txt"
-  )
+template <- function(file, data) {
+  lines <- readLines(file)
+  filled <- whisker::whisker.render(lines, data = data)
+  writeLines(filled, file)
 }
