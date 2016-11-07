@@ -15,6 +15,6 @@ Imports:
     yaml
 Suggests:
     jsonlite,
-    rcloud.support,
+    rcloud.support (>= 1.7-0),
     rstudioapi,
     whisker
