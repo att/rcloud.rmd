@@ -9,14 +9,16 @@ rmdToJson <- function(text, filename) {
 
       if (inherits(chunk, "yaml")) {
         yaml <<- chunk
+        code <- ifelse(trimws(chunk)=="", "<!-- -->", chunk)
         structure(
-          list(list(content = paste(chunk, collapse = "\n"))),
+          list(list(content = paste(code, collapse = "\n"))),
           names = paste0("part", num, ".md")
         )
 
       } else if (inherits(chunk, "inline")) {
+        code <- ifelse(trimws(chunk$text)=="", "<!-- -->", chunk$text)
         structure(
-          list(list(content = chunk$text)),
+          list(list(content = code)),
           names = paste0("part", num, ".md")
         )
 
@@ -39,7 +41,8 @@ rmdToJson <- function(text, filename) {
             "\n"
           )
         }
-        content <- paste0(content, paste(chunk$code, collapse = "\n"))
+        code <- ifelse(trimws(chunk$code)=="", "# ",chunk$code)
+        content <- paste0(content, paste(code, collapse = "\n"))
         structure(
           list(list(content = content)),
           names = paste0("part", num, ".R")
