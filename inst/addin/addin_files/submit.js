@@ -43,3 +43,12 @@ function post_to_url(path, params, method) {
     document.body.appendChild(form);
     form._submit_function_(); //Call the renamed function.
 }
+$(
+  function() {
+    $( "#newurl" ).keydown(function(event) {
+      if(event.which == 13) {
+        exportrmd();
+      }
+    })
+  }
+)
