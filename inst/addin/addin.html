@@ -21,35 +21,36 @@
 </head>
 
 <body style="padding:20px">
-
-  <div id="logo" style="margin-bottom:30px">
-    <img src="./addin_files/logo.svg"
-	 alt="RCloud -- Import Rmarkdown file">
-  </div>
-
-  <div class="form-group">
-    <div class = "control-group">
-      <label class="control-label" for="oldurl">
-	Known RCloud URLs
-      </label>
-      <select id="oldurl" style="width: 380px">
-        {{{ urls }}}
-	</select>
-      <script>
-	$('#oldurl').selectize({ create: true });
-      </script>
+  <form id="import-form" method="post">
+    <input id="json" name="json" type="hidden"/>
+    <div id="logo" style="margin-bottom:30px">
+      <img src="./addin_files/logo.svg"
+  	 alt="RCloud -- Import Rmarkdown file">
     </div>
-  </div>
+  
+    <div class="form-group">
+      <div class = "control-group">
+        <label class="control-label" for="rcloud_url_predefined">
+  	Known RCloud URLs
+        </label>
+        <select id="rcloud_url_predefined" style="width: 380px">
+          {{{ urls }}}
+  	</select>
+        <script>
+  	    $('#rcloud_url_predefined').selectize({ create: true });
+        </script>
+      </div>
+    </div>
+  
+    <div class="form-group">
+      <label for="rcloud_url_custom">Alternative RCloud URL</label>
+      <input id="rcloud_url_custom" name="rcloud_url_custom" type="text" class="form-control" value=""
+  	   style="width: 380px">
+    </div>
 
-  <div class="form-group">
-    <label for="newurl">Alternative RCloud URL</label>
-    <input id="newurl" type="text" class="form-control" value=""
-	   style="width: 380px">
-  </div>
-
-  <button id="exportButton" type="button"
-	  class="btn btn-default" onclick = "exportrmd()">Export</button>
-  <button id="cancelButton" type="button"
-	  class="btn btn-default" onclick = "cancelrmd()">Cancel</button>
-
+    <button id="exportButton" type="submit"
+  	  class="btn btn-default">Export</button>
+    <button id="cancelButton" type="button"
+  	  class="btn btn-default" onclick = "cancelrmd()">Cancel</button>
+  </form>
 </body></html>

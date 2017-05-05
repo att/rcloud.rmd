@@ -79,7 +79,7 @@ submission and its authentication.
 
 We currently use a static HTML web page, and a static JS file (`submit.js`),
 created by the addin. The JS file contains the JSON version of the Rmd
-already. It also contains the JS code to submit the form to RCloud.
+already.
 
 Doing a form submission instead of a proper HTTP POST API call has the advantage
 that we can use the token from the user's browser to authenticate to RCloud.
