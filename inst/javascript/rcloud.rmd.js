@@ -12,7 +12,7 @@
             // Are we in a notebook?
             if (RCloud.UI.advanced_menu.add) {
 
-                oc = RCloud.promisify_paths(ocaps, [
+                var oc = RCloud.promisify_paths(ocaps, [
                     [ 'importRmd' ],
                     [ 'exportRmd' ]
                 ], true);
